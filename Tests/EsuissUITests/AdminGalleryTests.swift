@@ -29,19 +29,19 @@ private struct Board: View {
         VStack(alignment: .leading, spacing: 10) {
           Text(verbatim: shot.caption)
             .font(TextStyle.xs.font(weight: .semibold))
-            .foregroundStyle(Color.labelSecondary)
+            .foregroundStyle(EsuissColor.mutedForeground)
           shot.view
             .frame(width: shot.width, height: shot.height)
             .clipShape(RoundedRectangle(cornerRadius: Radius.xl3, style: .continuous))
             .overlay {
-              RoundedRectangle(cornerRadius: Radius.xl3, style: .continuous).strokeBorder(Color.separator)
+              RoundedRectangle(cornerRadius: Radius.xl3, style: .continuous).strokeBorder(EsuissColor.border)
             }
         }
       }
     }
     .padding(24)
     .fixedSize()
-    .background(Color.surface)
+    .background(EsuissColor.background)
   }
 }
 
@@ -55,7 +55,7 @@ final class AdminGalleryTests: XCTestCase {
     for scheme in [ColorScheme.light, .dark] {
       let host = UIHostingController(rootView: Board(shots: shots)
         .frame(width: size.width, height: size.height, alignment: .topLeading)
-        .background(Color.surface)
+        .background(EsuissColor.background)
         .environment(\.locale, Locale(identifier: "en_US"))
         .environment(\.chartAnimationActive, false))
       host.safeAreaRegions = []
@@ -168,15 +168,15 @@ final class AdminGalleryTests: XCTestCase {
   func testRendersUsersTable() throws {
     try snapshot([
       Shot("Default") { UsersTable(role: "All") },
-      Shot("Selecting") { UsersTable(role: "All", selected: ["morgan@company.com", "taylor@company.com"]) },
+      Shot("Selecting") { UsersTable(role: "All", selected: ["morgan@example.com", "taylor@example.com"]) },
       Shot("Editor, search") { UsersTable(role: "Editor", query: "av") },
     ], name: "blocks-users-table")
   }
 
   func testRendersUsersInvite() throws {
     try snapshot([
-      Shot("Default") { UsersInvite(emails: ["avery@company.com"]) },
-      Shot("Several, Support") { UsersInvite(emails: ["avery@company.com", "sam@company.com", "kai@company.com"], draft: "lee@", role: "Support") },
+      Shot("Default") { UsersInvite(emails: ["avery@example.com"]) },
+      Shot("Several, Support") { UsersInvite(emails: ["avery@example.com", "sam@example.com", "kai@example.com"], draft: "lee@", role: "Support") },
       Shot("Empty") { UsersInvite(emails: [], pending: []) },
     ], name: "blocks-users-invite")
   }
@@ -223,10 +223,10 @@ final class AdminGalleryTests: XCTestCase {
     XCTAssertEqual(entries.first?.event.actor, LogLive.feed[3].actor)
 
     XCTAssertEqual(LogSecurity.score(LogSecurity.initialAlerts), 63)
-    XCTAssertEqual(LogSecurity.tone(63), .red)
+    XCTAssertEqual(LogSecurity.tone(63), Palette.red500)
     XCTAssertEqual(LogSecurity.score(LogSecurity.initialAlerts.map { var alert = $0; alert.resolved = true; return alert }), 100)
 
-    XCTAssertEqual(UsersInvite.email(" sam@company.com,"), "sam@company.com")
+    XCTAssertEqual(UsersInvite.email(" sam@example.com,"), "sam@example.com")
     XCTAssertNil(UsersInvite.email("sam@company"))
 
     XCTAssertEqual(UsersTable.filtered(UsersTable.initialUsers, role: "Editor", query: "").map(\.name), ["Morgan Lee", "Avery Brooks"])

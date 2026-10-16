@@ -40,14 +40,13 @@ public struct Card<Content: View>: View {
     .padding(.vertical, size.spacing)
     .frame(maxWidth: .infinity, alignment: .leading)
     .environment(\.cardSpacing, size.spacing)
-    .font(TextStyle.base.font())
-    .tracking(TextStyle.base.letterSpacing)
-    .foregroundStyle(Color.label)
-    .background(variant == .filled ? Color.surfaceSecondary : .surfaceRaised, in: shape)
+    .scaledFont(TextStyle.base)
+    .foregroundStyle(EsuissColor.foreground)
+    .background(variant == .filled ? EsuissColor.muted : EsuissColor.card, in: shape)
     .clipShape(shape)
     .overlay {
       if variant == .default {
-        shape.strokeBorder(Color.label.opacity(colorScheme == .dark ? 0.1 : 0.05))
+        shape.strokeBorder(EsuissColor.foreground.opacity(colorScheme == .dark ? 0.1 : 0.05))
       }
     }
     .shadow(variant == .default ? .md : Shadow(color: .clear, radius: 0))
@@ -106,7 +105,7 @@ public struct CardTitle: View {
   public var body: some View {
     Text(title)
       .textStyle(.base, weight: .semibold)
-      .foregroundStyle(Color.label)
+      .foregroundStyle(EsuissColor.foreground)
   }
 }
 
@@ -120,7 +119,7 @@ public struct CardDescription: View {
   public var body: some View {
     Text(text)
       .textStyle(.sm)
-      .foregroundStyle(Color.labelSecondary)
+      .foregroundStyle(EsuissColor.mutedForeground)
   }
 }
 

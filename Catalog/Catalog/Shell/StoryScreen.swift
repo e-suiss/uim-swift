@@ -5,6 +5,8 @@ import SwiftUI
 struct StoryScreen: View {
   let entry: StoryEntry
 
+  @Environment(CatalogModel.self) private var model
+
   var body: some View {
     if entry.group.isFullScreen(entry.story) {
       FullScreenStory(entry: entry)
@@ -22,9 +24,12 @@ struct StoryScreen: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
       }
-      .background(Color.surface.ignoresSafeArea())
+      .background(EsuissColor.background.ignoresSafeArea())
       .navigationTitle(Text(verbatim: entry.story.name))
       .navigationBarTitleDisplayMode(.inline)
+      .toolbar(model.demo || model.reveal ? .hidden : .automatic, for: .navigationBar)
+      .task(id: model.demo) { if model.demo { await StoryDemo.run() } }
+      .task(id: model.reveal) { if model.reveal { await StoryDemo.reveal() } }
       .toolbar {
         ToolbarItem(placement: .topBarTrailing) {
           ThemeMenu()
@@ -42,7 +47,7 @@ private struct FullScreenStory: View {
   var body: some View {
     entry.story.content()
       .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .background(Color.surface.ignoresSafeArea())
+      .background(EsuissColor.background.ignoresSafeArea())
       .toolbar(.hidden, for: .navigationBar)
       .statusBarHidden()
       .overlay(alignment: .top) {
@@ -72,15 +77,15 @@ private struct ChromeIcon<Icon: View>: View {
   var body: some View {
     icon()
       .frame(width: 16, height: 16)
-      .foregroundStyle(Color.label)
+      .foregroundStyle(EsuissColor.foreground)
       .frame(width: 32, height: 32)
       .background {
         Circle()
-          .fill(Color.surfaceRaised)
+          .fill(EsuissColor.card)
           .shadow(.md)
       }
       .overlay {
-        Circle().strokeBorder(Color.separator)
+        Circle().strokeBorder(EsuissColor.border)
       }
   }
 }

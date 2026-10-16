@@ -16,15 +16,14 @@ public struct Badge<Label: View>: View {
   public var body: some View {
     label
       .labelStyle(ButtonLabelStyle(spacing: 4, iconSize: 12))
-      .font(TextStyle.xs.font(weight: .semibold))
-      .tracking(TextStyle.xs.letterSpacing)
+      .scaledFont(TextStyle.xs, weight: .semibold)
       .lineLimit(1)
       .foregroundStyle(foreground)
       .padding(.horizontal, padded ? 8 : 0)
       .frame(height: 20)
       .overlay {
         if variant == .outline {
-          Capsule().strokeBorder(Color.separator)
+          Capsule().strokeBorder(EsuissColor.border)
         }
       }
       .clipShape(Capsule())
@@ -36,10 +35,10 @@ public struct Badge<Label: View>: View {
 
   private var foreground: Color {
     switch variant {
-    case .default, .link: .link
-    case .secondary: .labelSecondary
-    case .destructive: .danger
-    case .outline, .ghost: .label
+    case .default, .link: EsuissColor.primary
+    case .secondary: EsuissColor.mutedForeground
+    case .destructive: EsuissColor.destructive
+    case .outline, .ghost: EsuissColor.foreground
     }
   }
 }

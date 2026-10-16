@@ -59,7 +59,7 @@ public struct PriceStorage: View {
           VStack(spacing: 8) {
             Ph.cloud.regular
               .frame(width: 40, height: 40)
-              .foregroundStyle(Color.blue)
+              .foregroundStyle(Palette.blue500)
               .accessibilityHidden(true)
             Text("More space with suiss Cloud+.")
               .scaledTextStyle(.xl3, weight: .semibold)
@@ -134,7 +134,7 @@ private struct PriceStorageCard: View {
   let action: () -> Void
 
   var body: some View {
-    let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+    let shape = RoundedRectangle(cornerRadius: Radius.xl2, style: .continuous)
     Button(action: action) {
       VStack(alignment: .leading, spacing: 12) {
         HStack(spacing: 8) {
@@ -158,14 +158,14 @@ private struct PriceStorageCard: View {
             }
           }
           .scaledFont(.sm)
-          .foregroundStyle(Color.labelSecondary)
+          .foregroundStyle(EsuissColor.mutedForeground)
         }
         VStack(alignment: .leading, spacing: 6) {
           ForEach(plan.features, id: \.self) { feature in
             HStack(alignment: .firstTextBaseline, spacing: 6) {
               Ph.check.bold
                 .frame(width: 13, height: 13)
-                .foregroundStyle(Color.success)
+                .foregroundStyle(Color.adaptive(light: Palette.green600, dark: Palette.green400))
                 .alignmentGuide(.firstTextBaseline) { $0[.bottom] - 2 }
               Text(LocalizedStringKey(feature))
                 .scaledFont(.sm)
@@ -175,7 +175,7 @@ private struct PriceStorageCard: View {
         }
       }
       .padding(18)
-      .foregroundStyle(Color.label)
+      .foregroundStyle(EsuissColor.foreground)
       .frame(maxWidth: .infinity, alignment: .leading)
       .contentShape(shape)
     }
@@ -183,11 +183,11 @@ private struct PriceStorageCard: View {
     .overlay(alignment: .topLeading) {
       if plan.popular {
         Text("Most popular")
-          .scaledFont(.xs3, weight: .semibold)
-          .foregroundStyle(Color.onAccent)
+          .scaledFont(.xs, weight: .semibold)
+          .foregroundStyle(EsuissColor.primaryForeground)
           .padding(.horizontal, 9)
           .padding(.vertical, 2)
-          .background(Color.accent, in: Capsule())
+          .background(EsuissColor.primary, in: Capsule())
           .offset(x: 18, y: -9)
           .accessibilityHidden(true)
       }
@@ -204,12 +204,13 @@ private struct PriceStorageCardStyle: ButtonStyle {
   let selected: Bool
 
   func makeBody(configuration: Configuration) -> some View {
-    let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+    let shape = RoundedRectangle(cornerRadius: Radius.xl2, style: .continuous)
     configuration.label
-      .background(configuration.isPressed ? Color.surfaceTertiary : .surfaceSecondary, in: shape)
+      .background(EsuissColor.muted, in: shape)
+      .opacity(configuration.isPressed ? 0.8 : 1)
       .overlay {
         if selected {
-          shape.strokeBorder(Color.accent, lineWidth: 2)
+          shape.strokeBorder(EsuissColor.primary, lineWidth: 2)
         }
       }
   }

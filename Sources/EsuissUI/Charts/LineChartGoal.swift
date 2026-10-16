@@ -8,7 +8,7 @@ private let chartData: [(day: String, steps: Double)] = [
 ]
 
 private let chartConfig: ChartConfig = [
-  "steps": .init("Steps", color: .orange),
+  "steps": .init("Steps", color: EsuissColor.chart4),
 ]
 
 public struct LineChartGoal: View {
@@ -25,11 +25,11 @@ public struct LineChartGoal: View {
             Chart {
               RuleMark(y: .value("Goal", goal))
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                .foregroundStyle(Color.green)
+                .foregroundStyle(Palette.green500)
                 .annotation(position: .top, alignment: .leading, spacing: 4) {
                   Text("Goal")
-                    .font(TextStyle.xs.font(weight: .semibold))
-                    .foregroundStyle(Color.labelSecondary)
+                    .scaledFont(TextStyle.xs, weight: .semibold)
+                    .foregroundStyle(EsuissColor.mutedForeground)
                 }
               ForEach(chartData.indices, id: \.self) { index in
                 LineMark(x: .value("Day", index), y: .value("Steps", chartData[index].steps))
@@ -54,7 +54,7 @@ public struct LineChartGoal: View {
             ) { payload in
               ChartTooltipContent(payload, hideIndicator: true) { item in
                 Text("\(item.value, format: .number) steps")
-                  .font(TextStyle.xs.font(weight: .semibold))
+                  .scaledFont(TextStyle.xs, weight: .semibold)
                   .monospacedDigit()
               }
             }

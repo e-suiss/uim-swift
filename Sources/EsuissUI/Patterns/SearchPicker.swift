@@ -94,7 +94,7 @@ public struct SearchPicker: View {
         .frame(width: 320, height: 360)
         .environment(\.overlayDismiss, OverlayDismiss { isOpen.wrappedValue = false })
         .presentationCompactAdaptation(.popover)
-        .presentationBackground(Color.surfaceRaised)
+        .presentationBackground(EsuissColor.card)
       }
   }
 
@@ -118,32 +118,31 @@ public struct SearchPicker: View {
             Text(verbatim: "")
           }
         }
-        .font(TextStyle.base.font())
-        .tracking(TextStyle.base.letterSpacing)
+        .scaledFont(TextStyle.base)
         .lineLimit(1)
-        .foregroundStyle(!isEnabled ? Color.labelQuaternary : selected == nil ? .labelSecondary : .label)
+        .foregroundStyle(selected == nil ? EsuissColor.mutedForeground : EsuissColor.foreground)
         .frame(maxWidth: .infinity, alignment: .leading)
         Ph.caretUpDown.regular
           .frame(width: 16, height: 16)
-          .foregroundStyle(isEnabled ? Color.labelSecondary : .labelQuaternary)
+          .foregroundStyle(EsuissColor.mutedForeground)
           .accessibilityHidden(true)
       }
       .padding(.horizontal, 12)
       .frame(height: 44)
       .background(background, in: shape)
       .overlay {
-        if invalid { shape.strokeBorder(Color.danger) }
+        if invalid { shape.strokeBorder(EsuissColor.destructive) }
       }
       .contentShape(shape)
+      .opacity(isEnabled ? 1 : 0.5)
     }
     .buttonStyle(.plain)
     .accessibilityHint(Text("Shows options"))
   }
 
   private var background: Color {
-    if !isEnabled { return .controlDisabled }
-    if invalid { return .danger.opacity(colorScheme == .dark ? 0.1 : 0.05) }
-    return .control
+    if invalid { return EsuissColor.destructive.opacity(colorScheme == .dark ? 0.1 : 0.05) }
+    return EsuissColor.secondary
   }
 }
 
@@ -200,30 +199,28 @@ struct SearchPickerPanel: View {
       HStack(spacing: 12) {
         Ph.magnifyingGlass.regular
           .frame(width: 22, height: 22)
-          .foregroundStyle(Color.labelSecondary)
+          .foregroundStyle(EsuissColor.mutedForeground)
           .accessibilityHidden(true)
-        TextField(searchPlaceholder, text: $query, prompt: Text(searchPlaceholder).foregroundStyle(Color.labelTertiary))
+        TextField(searchPlaceholder, text: $query, prompt: Text(searchPlaceholder).foregroundStyle(EsuissColor.mutedForeground))
           .focused($focused)
           .textInputAutocapitalization(.never)
           .autocorrectionDisabled()
-          .font(TextStyle.xl.font())
-          .tracking(TextStyle.xl.letterSpacing)
-          .foregroundStyle(Color.label)
-          .tint(Color.accent)
+          .scaledFont(TextStyle.xl)
+          .foregroundStyle(EsuissColor.foreground)
+          .tint(EsuissColor.primary)
       }
       .padding(.leading, 16)
       .padding(.trailing, 16 + trailingInset)
       .frame(height: 56)
       .overlay(alignment: .bottom) {
-        Color.separator.frame(height: 1)
+        EsuissColor.border.frame(height: 1)
       }
       ScrollView {
         LazyVStack(alignment: .leading, spacing: 0) {
           if groups.isEmpty {
             Text(emptyText)
-              .font(TextStyle.base.font())
-              .tracking(TextStyle.base.letterSpacing)
-              .foregroundStyle(Color.labelSecondary)
+              .scaledFont(TextStyle.base)
+              .foregroundStyle(EsuissColor.mutedForeground)
               .multilineTextAlignment(.center)
               .frame(maxWidth: .infinity)
               .padding(.vertical, 40)
@@ -232,9 +229,8 @@ struct SearchPickerPanel: View {
             VStack(alignment: .leading, spacing: 0) {
               if !group.name.isEmpty {
                 Text(verbatim: group.name)
-                  .font(TextStyle.xs.font(weight: .semibold))
-                  .tracking(TextStyle.xs.letterSpacing)
-                  .foregroundStyle(Color.labelSecondary)
+                  .scaledFont(TextStyle.xs, weight: .semibold)
+                  .foregroundStyle(EsuissColor.mutedForeground)
                   .padding(.horizontal, 12)
                   .padding(.top, 4)
                   .padding(.bottom, 6)
@@ -251,7 +247,7 @@ struct SearchPickerPanel: View {
       }
       .scrollDismissesKeyboard(.interactively)
     }
-    .foregroundStyle(Color.label)
+    .foregroundStyle(EsuissColor.foreground)
     .onAppear {
       query = initialQuery
       if autofocus { focused = true }
@@ -280,24 +276,20 @@ struct SearchPickerRowStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     HStack(spacing: 12) {
       configuration.label
-        .font(TextStyle.base.font())
-        .tracking(TextStyle.base.letterSpacing)
+        .scaledFont(TextStyle.base)
         .lineLimit(1)
         .frame(maxWidth: .infinity, alignment: .leading)
       if checked {
         Ph.check.regular
           .frame(width: 20, height: 20)
-          .foregroundStyle(Color.labelSecondary)
+          .foregroundStyle(EsuissColor.mutedForeground)
           .accessibilityHidden(true)
       }
     }
-    .foregroundStyle(isEnabled ? Color.label : .labelQuaternary)
+    .foregroundStyle(EsuissColor.foreground)
     .padding(.horizontal, 12)
     .frame(height: 40)
-    .background(
-      configuration.isPressed && isEnabled ? Color.itemPressed : .clear,
-      in: RoundedRectangle(cornerRadius: Radius.lg, style: .continuous)
-    )
+    .opacity(isEnabled ? (configuration.isPressed ? 0.8 : 1) : 0.5)
     .contentShape(Rectangle())
   }
 }

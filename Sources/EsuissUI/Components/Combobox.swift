@@ -75,9 +75,8 @@ public struct Combobox<Item: Hashable & Sendable>: View {
   }
 
   private var background: Color {
-    if !isEnabled { return .controlDisabled }
-    if invalid { return .danger.opacity(colorScheme == .dark ? 0.1 : 0.05) }
-    return .control
+    if invalid { return EsuissColor.destructive.opacity(colorScheme == .dark ? 0.1 : 0.05) }
+    return EsuissColor.secondary
   }
 
   @ViewBuilder private var trigger: some View {
@@ -96,14 +95,13 @@ public struct Combobox<Item: Hashable & Sendable>: View {
         Group {
           if let value = selection.wrappedValue {
             Text(verbatim: title(value))
-              .foregroundStyle(isEnabled ? Color.label : .labelQuaternary)
+              .foregroundStyle(EsuissColor.foreground)
           } else {
             Text(placeholder)
-              .foregroundStyle(isEnabled ? Color.labelSecondary : .labelQuaternary)
+              .foregroundStyle(EsuissColor.mutedForeground)
           }
         }
-        .font(TextStyle.base.font())
-        .tracking(TextStyle.base.letterSpacing)
+        .scaledFont(TextStyle.base)
         .lineLimit(1)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(.leading, 12)
@@ -117,7 +115,7 @@ public struct Combobox<Item: Hashable & Sendable>: View {
         } label: {
           Ph.x.regular
             .frame(width: 16, height: 16)
-            .foregroundStyle(isEnabled ? Color.label : .labelQuaternary)
+            .foregroundStyle(EsuissColor.foreground)
         }
         .buttonStyle(ComboboxIconButtonStyle())
         .accessibilityLabel(Text("Clear"))
@@ -127,7 +125,7 @@ public struct Combobox<Item: Hashable & Sendable>: View {
       } label: {
         Ph.caretDown.regular
           .frame(width: 16, height: 16)
-          .foregroundStyle(isEnabled ? Color.labelSecondary : .labelQuaternary)
+          .foregroundStyle(EsuissColor.mutedForeground)
       }
       .buttonStyle(ComboboxIconButtonStyle())
       .accessibilityHidden(true)
@@ -136,8 +134,9 @@ public struct Combobox<Item: Hashable & Sendable>: View {
     .frame(height: 44)
     .background(background, in: shape)
     .overlay {
-      if invalid { shape.strokeBorder(Color.danger) }
+      if invalid { shape.strokeBorder(EsuissColor.destructive) }
     }
+    .opacity(isEnabled ? 1 : 0.5)
   }
 
   private func chips(_ selection: Binding<[Item]>) -> some View {
@@ -150,9 +149,8 @@ public struct Combobox<Item: Hashable & Sendable>: View {
       }
       if values.isEmpty {
         Text(placeholder)
-          .font(TextStyle.base.font())
-          .tracking(TextStyle.base.letterSpacing)
-          .foregroundStyle(isEnabled ? Color.labelSecondary : .labelQuaternary)
+          .scaledFont(TextStyle.base)
+          .foregroundStyle(EsuissColor.mutedForeground)
           .lineLimit(1)
       }
     }
@@ -161,8 +159,9 @@ public struct Combobox<Item: Hashable & Sendable>: View {
     .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
     .background(background, in: shape)
     .overlay {
-      if invalid { shape.strokeBorder(Color.danger) }
+      if invalid { shape.strokeBorder(EsuissColor.destructive) }
     }
+    .opacity(isEnabled ? 1 : 0.5)
     .contentShape(shape)
     .onTapGesture {
       if isEnabled { open = true }
@@ -210,7 +209,7 @@ private struct ComboboxIconButtonStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .frame(width: 24, height: 24)
-      .background(configuration.isPressed ? Color.itemPressed : .clear, in: Circle())
+      .opacity(configuration.isPressed ? 0.8 : 1)
       .contentShape(Circle().inset(by: -6))
   }
 }
@@ -224,8 +223,7 @@ private struct ComboboxChip: View {
   var body: some View {
     HStack(spacing: 2) {
       Text(verbatim: text)
-        .font(TextStyle.xs.font())
-        .tracking(TextStyle.xs.letterSpacing)
+        .scaledFont(TextStyle.xs)
         .lineLimit(1)
       Button(action: remove) {
         Ph.x.regular
@@ -236,11 +234,11 @@ private struct ComboboxChip: View {
       .buttonStyle(ChipRemoveStyle())
       .accessibilityLabel(Text("Remove \(text)"))
     }
-    .foregroundStyle(isEnabled ? Color.link : .labelQuaternary)
+    .foregroundStyle(EsuissColor.primary)
     .padding(.leading, 10)
     .padding(.trailing, 2)
     .frame(height: 22)
-    .background(isEnabled ? Color.accentSurface : .controlDisabled, in: Capsule())
+    .background(Color.adaptive(light: EsuissColor.primary.opacity(0.1), dark: EsuissColor.primary.opacity(0.2)), in: Capsule())
   }
 }
 
@@ -321,9 +319,8 @@ struct ComboboxPanel<Item: Hashable & Sendable>: View {
     let list = VStack(alignment: .leading, spacing: 0) {
       if filtered.isEmpty {
         Text(emptyText)
-          .font(TextStyle.sm.font())
-          .tracking(TextStyle.sm.letterSpacing)
-          .foregroundStyle(Color.labelSecondary)
+          .scaledFont(TextStyle.sm)
+          .foregroundStyle(EsuissColor.mutedForeground)
           .multilineTextAlignment(.center)
           .frame(maxWidth: .infinity)
           .padding(.vertical, 8)
@@ -338,15 +335,15 @@ struct ComboboxPanel<Item: Hashable & Sendable>: View {
         .focused($focused)
         .textInputAutocapitalization(.never)
         .autocorrectionDisabled()
-        .font(TextStyle.base.font())
-        .foregroundStyle(Color.label)
-        .tint(Color.accent)
+        .scaledFont(TextStyle.base)
+        .foregroundStyle(EsuissColor.foreground)
+        .tint(EsuissColor.primary)
         .padding(.horizontal, 12)
         .frame(height: 32)
-        .background(Color.control, in: RoundedRectangle(cornerRadius: Radius.lg, style: .continuous))
+        .background(EsuissColor.secondary, in: RoundedRectangle(cornerRadius: Radius.lg, style: .continuous))
         .overlay {
           RoundedRectangle(cornerRadius: Radius.lg, style: .continuous)
-            .strokeBorder(Color.separator.opacity(0.3))
+            .strokeBorder(EsuissColor.border.opacity(0.3))
         }
         .padding([.horizontal, .top], 6)
       ViewThatFits(in: .vertical) {
@@ -354,9 +351,8 @@ struct ComboboxPanel<Item: Hashable & Sendable>: View {
         ScrollView { list }
       }
     }
-    .font(TextStyle.base.font())
-    .tracking(TextStyle.base.letterSpacing)
-    .foregroundStyle(Color.label)
+    .scaledFont(TextStyle.base)
+    .foregroundStyle(EsuissColor.foreground)
     .popupSurface(radius: Radius.xl)
     .accessibilityElement(children: .contain)
     .onAppear {
@@ -391,7 +387,7 @@ struct ComboboxPanel<Item: Hashable & Sendable>: View {
       if selected {
         Ph.check.regular
           .frame(width: 16, height: 16)
-          .foregroundStyle(Color.link)
+          .foregroundStyle(EsuissColor.primary)
           .padding(.trailing, 8)
           .accessibilityHidden(true)
       }

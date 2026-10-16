@@ -25,8 +25,8 @@ public enum TextVariant: CaseIterable, Sendable {
 
   var color: Color {
     switch self {
-    case .lead, .muted: .labelSecondary
-    default: .label
+    case .lead, .muted: EsuissColor.mutedForeground
+    default: EsuissColor.foreground
     }
   }
 
@@ -48,7 +48,7 @@ private struct TextVariantModifier: ViewModifier {
         .italic()
         .padding(.leading, 12)
         .overlay(alignment: .leading) {
-          Rectangle().fill(Color.separator).frame(width: 2)
+          Rectangle().fill(EsuissColor.border).frame(width: 2)
         }
         .padding(.top, 16)
     case .code:
@@ -56,7 +56,7 @@ private struct TextVariantModifier: ViewModifier {
         .monospaced()
         .padding(.horizontal, 4)
         .padding(.vertical, 2)
-        .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous))
+        .background(EsuissColor.muted, in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous))
     case .p:
       styled(content).padding(.top, 12)
     default:
@@ -75,45 +75,5 @@ private struct TextVariantModifier: ViewModifier {
 extension View {
   public func textVariant(_ variant: TextVariant) -> some View {
     modifier(TextVariantModifier(variant: variant))
-  }
-}
-
-private struct ScaledTextStyleModifier: ViewModifier {
-  let style: TextStyle
-  let weight: Font.Weight
-
-  @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
-
-  func body(content: Content) -> some View {
-    let size = style.size * scale
-    let lineSpacing = max(0, style.lineHeight * scale - UIFont.systemFont(ofSize: size).lineHeight)
-    content
-      .font(.system(size: size, weight: weight))
-      .tracking(style.letterSpacing)
-      .lineSpacing(lineSpacing)
-      .padding(.vertical, lineSpacing / 2)
-  }
-}
-
-extension View {
-  func scaledTextStyle(_ style: TextStyle, weight: Font.Weight = .regular) -> some View {
-    modifier(ScaledTextStyleModifier(style: style, weight: weight))
-  }
-
-  func scaledFont(_ style: TextStyle, weight: Font.Weight = .regular) -> some View {
-    modifier(ScaledFontModifier(style: style, weight: weight))
-  }
-}
-
-private struct ScaledFontModifier: ViewModifier {
-  let style: TextStyle
-  let weight: Font.Weight
-
-  @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
-
-  func body(content: Content) -> some View {
-    content
-      .font(.system(size: style.size * scale, weight: weight))
-      .tracking(style.letterSpacing)
   }
 }

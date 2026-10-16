@@ -7,22 +7,28 @@ enum PullToRefreshStories {
       PullToRefreshFeed()
     },
     Story("WithFlatList", scrolls: false) {
-      ScrollView {
-        LazyVStack(alignment: .leading, spacing: 0) {
-          ForEach(["Inbox", "Drafts", "Sent", "Archive"], id: \.self) { item in
-            Text(verbatim: item)
-              .textStyle(.base)
-              .foregroundStyle(Color.label)
-              .padding(.vertical, 12)
-              .frame(maxWidth: .infinity, alignment: .leading)
-          }
-        }
-      }
-      .pullToRefresh {
-        try? await Task.sleep(for: .milliseconds(1000))
-      }
+      PullToRefreshList()
     },
   ])
+}
+
+private struct PullToRefreshList: View {
+  var body: some View {
+    ScrollView {
+      LazyVStack(alignment: .leading, spacing: 0) {
+        ForEach(["Inbox", "Drafts", "Sent", "Archive"], id: \.self) { item in
+          Text(verbatim: item)
+            .textStyle(.base)
+            .foregroundStyle(EsuissColor.foreground)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+      }
+    }
+    .pullToRefresh {
+      try? await Task.sleep(for: .milliseconds(1000))
+    }
+  }
 }
 
 private struct PullToRefreshFeed: View {
@@ -36,7 +42,7 @@ private struct PullToRefreshFeed: View {
       VStack(alignment: .leading, spacing: 12) {
         Text("Pull down to refresh")
           .textStyle(.sm)
-          .foregroundStyle(Color.labelSecondary)
+          .foregroundStyle(EsuissColor.mutedForeground)
         ItemGroup(.inset) {
           ForEach(Array((1...count).reversed()), id: \.self) { update in
             if update != count {

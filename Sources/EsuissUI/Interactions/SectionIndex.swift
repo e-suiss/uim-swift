@@ -138,7 +138,7 @@ public struct SectionIndexHeader: View {
   public var body: some View {
     title
       .scaledFont(.sm, weight: .semibold)
-      .foregroundStyle(Color.labelSecondary)
+      .foregroundStyle(EsuissColor.mutedForeground)
       .padding(.horizontal, 16)
       .padding(.vertical, 6)
       .frame(maxWidth: .infinity, alignment: .leading)
@@ -175,8 +175,8 @@ public struct SectionIndexBar: View {
     VStack(spacing: 0) {
       ForEach(items, id: \.key) { item in
         Text(verbatim: item.label)
-          .font(TextStyle.xs3.font(weight: .semibold))
-          .foregroundStyle(Color.link)
+          .scaledFont(TextStyle.xs, weight: .semibold)
+          .foregroundStyle(EsuissColor.primary)
           .frame(minWidth: 12, minHeight: SectionIndexMath.rowHeight, maxHeight: SectionIndexMath.rowHeight)
       }
     }
@@ -240,11 +240,11 @@ private struct SectionIndexBubble: View {
 
   var body: some View {
     Text(verbatim: letter)
-      .font(TextStyle.xl2.font(weight: .semibold))
-      .foregroundStyle(Color.label)
+      .scaledFont(TextStyle.xl2, weight: .semibold)
+      .foregroundStyle(EsuissColor.foreground)
       .frame(width: 56, height: 56)
-      .background(Circle().fill(Color.surfaceRaised).shadow(.lg))
-      .overlay(Circle().strokeBorder(Color.separator))
+      .background(Circle().fill(EsuissColor.popover).shadow(.lg))
+      .overlay(Circle().strokeBorder(EsuissColor.border))
       .allowsHitTesting(false)
       .accessibilityHidden(true)
   }
